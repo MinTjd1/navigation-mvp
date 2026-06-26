@@ -55,8 +55,9 @@ export default function OCRScanPage() {
 
     setTimeout(() => {
       const sampleAddresses = [
-        '서울특별시 강남구 테헤란로 152',
-        '서울특별시 송파구 올림픽로 300',
+        '대전광역시 서구 둔산로 100',
+        '대전광역시 유성구 대학로 99',
+        '대전광역시 동구 대전로 689',
       ];
       const randomAddr = sampleAddresses[Math.floor(Math.random() * sampleAddresses.length)];
       const newItem: ScannedBarcode = {

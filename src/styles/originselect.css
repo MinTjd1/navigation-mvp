@@ -1,0 +1,137 @@
+.origin-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.origin-container h1 {
+  color: white;
+  font-size: 32px;
+  margin: 0 0 8px;
+  text-align: center;
+}
+
+.origin-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  margin: 0 0 48px;
+}
+
+.origin-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+  max-width: 780px;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.origin-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 40px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 3px solid transparent;
+  position: relative;
+}
+
+.origin-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  border-color: rgba(91, 76, 255, 0.3);
+}
+
+.origin-card.selected {
+  border-color: #5b4cff;
+  box-shadow: 0 20px 60px rgba(91, 76, 255, 0.3);
+  transform: translateY(-6px);
+}
+
+.origin-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.origin-card h2 {
+  font-size: 22px;
+  color: #1a1a2e;
+  margin: 0 0 12px;
+}
+
+.origin-address {
+  color: #555;
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+
+.origin-coords {
+  color: #999;
+  font-size: 12px;
+}
+
+.check-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  background: #5b4cff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.origin-actions {
+  display: flex;
+  gap: 16px;
+  max-width: 780px;
+  width: 100%;
+}
+
+.origin-actions .btn-back {
+  padding: 14px 28px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.origin-actions .btn-back:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.origin-actions .btn-proceed {
+  flex: 1;
+  padding: 14px;
+  background: linear-gradient(135deg, #5b4cff, #7c6cff);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.origin-actions .btn-proceed:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.origin-actions .btn-proceed:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(91, 76, 255, 0.4);
+}

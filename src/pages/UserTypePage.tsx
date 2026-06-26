@@ -8,11 +8,7 @@ export default function UserTypePage() {
 
   function selectType(type: 'driver' | 'general') {
     updateUser({ userType: type });
-    if (type === 'driver') {
-      navigate('/ocr-scan');
-    } else {
-      navigate('/manual-input');
-    }
+    navigate('/origin-select');
   }
 
   return (
@@ -28,7 +24,7 @@ export default function UserTypePage() {
           <ul className="usertype-features">
             <li>OCR 카메라 연동</li>
             <li>운송장 바코드 자동 인식</li>
-            <li>주소 자동 추출</li>
+            <li>대전 지역 주소 자동 추출</li>
             <li>배달 순서 최적화</li>
           </ul>
           <button className="btn-select">배달 기사로 시작</button>
@@ -37,10 +33,10 @@ export default function UserTypePage() {
         <div className="usertype-card" onClick={() => selectType('general')}>
           <div className="usertype-icon">🧭</div>
           <h2>일반 사용</h2>
-          <p>여러 목적지를 직접 입력하여<br />최적의 방문 경로를 찾아드립니다</p>
+          <p>대전 지역 내 여러 목적지를 입력하여<br />최적의 방문 경로를 찾아드립니다</p>
           <ul className="usertype-features">
-            <li>다중 목적지 입력</li>
-            <li>경로 최적화</li>
+            <li>대전 지역 다중 목적지 입력</li>
+            <li>플로이드-워셜 경로 최적화</li>
             <li>지도 위 경로 표시</li>
             <li>네비게이션 안내</li>
           </ul>

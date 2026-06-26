@@ -8,6 +8,13 @@ import 'leaflet/dist/leaflet.css';
 
 const COLORS = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22', '#34495e', '#e91e63', '#00bcd4'];
 
+interface OriginInfo {
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
+
 function createNumberedIcon(num: number, color: string) {
   return L.divIcon({
     className: 'numbered-marker',
@@ -17,8 +24,18 @@ function createNumberedIcon(num: number, color: string) {
   });
 }
 
+function createOriginIcon() {
+  return L.divIcon({
+    className: 'origin-marker',
+    html: `<div style="background:#ff6b35;color:white;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:20px;border:4px solid white;box-shadow:0 3px 10px rgba(255,107,53,0.5);">S</div>`,
+    iconSize: [40, 40],
+    iconAnchor: [20, 20],
+  });
+}
+
 export default function NavigationPage() {
   const [routeResult, setRouteResult] = useState<RouteResult | null>(null);
+  const [origin, setOrigin] = useState<OriginInfo | null>(null);
   const [isOptimizing, setIsOptimizing] = useState(true);
   const [activeStep, setActiveStep] = useState(0);
   const [showMatrix, setShowMatrix] = useState(false);
@@ -28,28 +45,48 @@ export default function NavigationPage() {
 
   useEffect(() => {
     const saved = sessionStorage.getItem('reviewedAddresses');
+    const originData = sessionStorage.getItem('selectedOrigin');
     if (!saved) {
       navigate('/user-type');
       return;
     }
 
-    const addresses: Address[] = JSON.parse(saved);
-    const distMatrix = buildDistanceMatrix(addresses);
-    const result = optimizeRoute(addresses, distMatrix);
+    if (originData) {
+      setOrigin(JSON.parse(originData));
+    }
 
-    setTimeout(() => {
-      setRouteResult(result);
-      setIsOptimizing(false);
-    }, 2000);
+    const addresses: Address[] = JSON.parse(saved);
+
+    if (originData) {
+      const parsedOrigin: OriginInfo = JSON.parse(originData);
+      const originAddress: Address = {
+        id: 'origin',
+        address: parsedOrigin.address,
+        lat: parsedOrigin.lat,
+        lng: parsedOrigin.lng,
+        label: '출발지',
+      };
+      const allAddresses = [originAddress, ...addresses];
+      const distMatrix = buildDistanceMatrix(allAddresses);
+      const result = optimizeRoute(allAddresses, distMatrix);
+      setTimeout(() => {
+        setRouteResult(result);
+        setIsOptimizing(false);
+      }, 2000);
+    } else {
+      const distMatrix = buildDistanceMatrix(addresses);
+      const result = optimizeRoute(addresses, distMatrix);
+      setTimeout(() => {
+        setRouteResult(result);
+        setIsOptimizing(false);
+      }, 2000);
+    }
   }, [navigate]);
 
   useEffect(() => {
     if (!routeResult || !mapRef.current || mapInstanceRef.current) return;
 
-    const map = L.map(mapRef.current).setView(
-      [routeResult.orderedAddresses[0].lat, routeResult.orderedAddresses[0].lng],
-      12
-    );
+    const map = L.map(mapRef.current).setView([36.3504, 127.3845], 12);
     mapInstanceRef.current = map;
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -64,10 +101,15 @@ export default function NavigationPage() {
       bounds.extend(latlng);
       coords.push(latlng);
 
-      const color = COLORS[i % COLORS.length];
-      L.marker(latlng, { icon: createNumberedIcon(i + 1, color) })
-        .addTo(map)
-        .bindPopup(`<b>${i + 1}번째 방문</b><br/>${addr.address}`);
+      const isOrigin = addr.id === 'origin';
+      const icon = isOrigin
+        ? createOriginIcon()
+        : createNumberedIcon(origin ? i : i + 1, COLORS[(origin ? i - 1 : i) % COLORS.length]);
+      const popupText = isOrigin
+        ? `<b>출발지</b><br/>${origin?.name}<br/>${addr.address}`
+        : `<b>${origin ? i : i + 1}번째 방문</b><br/>${addr.address}`;
+
+      L.marker(latlng, { icon }).addTo(map).bindPopup(popupText);
     });
 
     L.polyline(coords, {
@@ -101,7 +143,7 @@ export default function NavigationPage() {
       map.remove();
       mapInstanceRef.current = null;
     };
-  }, [routeResult]);
+  }, [routeResult, origin]);
 
   if (isOptimizing) {
     return (
@@ -121,7 +163,7 @@ export default function NavigationPage() {
             </div>
           </div>
           <h2>플로이드-워셜 알고리즘 수행 중...</h2>
-          <p>모든 경유지 간 최단 경로를 계산하고 있습니다</p>
+          <p>대전 지역 경유지 간 최단 경로를 계산하고 있습니다</p>
           <div className="progress-bar">
             <div className="progress-fill" />
           </div>
@@ -138,15 +180,24 @@ export default function NavigationPage() {
 
   if (!routeResult) return null;
 
+  const destCount = origin
+    ? routeResult.orderedAddresses.length - 1
+    : routeResult.orderedAddresses.length;
+
   return (
     <div className="navigation-container">
       <div className="nav-sidebar">
         <div className="nav-header">
           <h1>최적화된 경로</h1>
+          {origin && (
+            <div className="origin-badge">
+              📦 출발: {origin.name}
+            </div>
+          )}
           <div className="route-summary">
             <div className="summary-item">
-              <span className="summary-label">총 목적지</span>
-              <span className="summary-value">{routeResult.orderedAddresses.length}곳</span>
+              <span className="summary-label">배송지</span>
+              <span className="summary-value">{destCount}곳</span>
             </div>
             <div className="summary-item">
               <span className="summary-label">총 거리</span>
@@ -156,29 +207,34 @@ export default function NavigationPage() {
         </div>
 
         <div className="route-steps">
-          {routeResult.orderedAddresses.map((addr, i) => (
-            <div
-              key={addr.id}
-              className={`route-step ${activeStep === i ? 'active' : ''}`}
-              onClick={() => setActiveStep(i)}
-            >
+          {routeResult.orderedAddresses.map((addr, i) => {
+            const isOrigin = addr.id === 'origin';
+            return (
               <div
-                className="step-marker"
-                style={{ background: COLORS[i % COLORS.length] }}
+                key={addr.id}
+                className={`route-step ${activeStep === i ? 'active' : ''} ${isOrigin ? 'origin-step' : ''}`}
+                onClick={() => setActiveStep(i)}
               >
-                {i + 1}
-              </div>
-              <div className="step-info">
-                <span className="step-address">{addr.address}</span>
-                {i < routeResult.orderedAddresses.length - 1 && (
-                  <span className="step-distance">
-                    → 다음 목적지까지{' '}
-                    {routeResult.distanceMatrix[i]?.[i + 1]?.toFixed(1) ?? '?'}km
+                <div
+                  className="step-marker"
+                  style={{ background: isOrigin ? '#ff6b35' : COLORS[(origin ? i - 1 : i) % COLORS.length] }}
+                >
+                  {isOrigin ? 'S' : (origin ? i : i + 1)}
+                </div>
+                <div className="step-info">
+                  <span className="step-address">
+                    {isOrigin ? `[출발] ${origin?.name}` : addr.address}
                   </span>
-                )}
+                  {i < routeResult.orderedAddresses.length - 1 && (
+                    <span className="step-distance">
+                      → 다음까지{' '}
+                      {routeResult.distanceMatrix[i]?.[i + 1]?.toFixed(1) ?? '?'}km
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <button className="btn-matrix" onClick={() => setShowMatrix(!showMatrix)}>
@@ -193,15 +249,17 @@ export default function NavigationPage() {
                 <thead>
                   <tr>
                     <th></th>
-                    {routeResult.orderedAddresses.map((_, i) => (
-                      <th key={i}>{i + 1}</th>
+                    {routeResult.orderedAddresses.map((addr, i) => (
+                      <th key={i}>{addr.id === 'origin' ? 'S' : (origin ? i : i + 1)}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {routeResult.distanceMatrix.map((row, i) => (
                     <tr key={i}>
-                      <td className="matrix-header">{i + 1}</td>
+                      <td className="matrix-header">
+                        {routeResult.orderedAddresses[i]?.id === 'origin' ? 'S' : (origin ? i : i + 1)}
+                      </td>
                       {row.map((val, j) => (
                         <td key={j} className={i === j ? 'diagonal' : ''}>
                           {val.toFixed(1)}

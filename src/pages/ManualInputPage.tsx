@@ -43,11 +43,11 @@ export default function ManualInputPage() {
 
   function loadSampleData() {
     const samples = [
-      '서울특별시 강남구 테헤란로 152',
-      '서울특별시 송파구 올림픽로 300',
-      '서울특별시 마포구 월드컵북로 396',
-      '서울특별시 종로구 세종대로 209',
-      '서울특별시 영등포구 여의대방로 300',
+      '대전광역시 서구 둔산로 100',
+      '대전광역시 유성구 대학로 99',
+      '대전광역시 동구 대전로 689',
+      '대전광역시 중구 중앙로 101',
+      '대전광역시 대덕구 한밭대로 1233',
     ];
     setDestinations(samples.map(address => ({
       id: crypto.randomUUID(),
@@ -59,7 +59,7 @@ export default function ManualInputPage() {
     <div className="manual-container">
       <div className="manual-header">
         <h1>다중 목적지 입력</h1>
-        <p>방문할 목적지의 주소를 입력해주세요</p>
+        <p>대전 지역 내 방문할 목적지의 주소를 입력해주세요</p>
         <button className="btn-sample" onClick={loadSampleData}>
           📋 샘플 데이터 불러오기
         </button>
@@ -73,7 +73,7 @@ export default function ManualInputPage() {
               type="text"
               value={dest.address}
               onChange={e => updateAddress(dest.id, e.target.value)}
-              placeholder={`목적지 ${index + 1}의 주소를 입력하세요`}
+              placeholder={`대전광역시 ...`}
               className="dest-input"
             />
             <button
@@ -92,7 +92,7 @@ export default function ManualInputPage() {
       </button>
 
       <div className="manual-actions">
-        <button className="btn-back" onClick={() => navigate('/user-type')}>
+        <button className="btn-back" onClick={() => navigate('/origin-select')}>
           ← 뒤로
         </button>
         <button className="btn-proceed" onClick={handleProceed}>

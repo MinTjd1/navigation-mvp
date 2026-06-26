@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import SubscriptionPage from './pages/SubscriptionPage';
 import UserTypePage from './pages/UserTypePage';
+import OriginSelectPage from './pages/OriginSelectPage';
 import OCRScanPage from './pages/OCRScanPage';
 import ManualInputPage from './pages/ManualInputPage';
 import AddressReviewPage from './pages/AddressReviewPage';
@@ -22,6 +23,7 @@ function AppRoutes() {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
       <Route path="/user-type" element={<ProtectedRoute><UserTypePage /></ProtectedRoute>} />
+      <Route path="/origin-select" element={<ProtectedRoute><OriginSelectPage /></ProtectedRoute>} />
       <Route path="/ocr-scan" element={<ProtectedRoute><OCRScanPage /></ProtectedRoute>} />
       <Route path="/manual-input" element={<ProtectedRoute><ManualInputPage /></ProtectedRoute>} />
       <Route path="/address-review" element={<ProtectedRoute><AddressReviewPage /></ProtectedRoute>} />
