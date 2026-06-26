@@ -1,0 +1,251 @@
+.ocr-container {
+  min-height: 100vh;
+  background: #f5f5f9;
+  padding: 24px;
+}
+
+.ocr-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.ocr-header h1 {
+  font-size: 28px;
+  color: #1a1a2e;
+  margin: 0 0 8px;
+}
+
+.ocr-header p {
+  color: #666;
+  margin: 0;
+}
+
+.ocr-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .ocr-content { grid-template-columns: 1fr; }
+}
+
+.camera-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.camera-viewport {
+  aspect-ratio: 4/3;
+  background: #1a1a2e;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+
+.camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.camera-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.camera-icon {
+  font-size: 64px;
+  margin-bottom: 12px;
+}
+
+.scanning-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.scan-line {
+  width: 80%;
+  height: 3px;
+  background: #5b4cff;
+  box-shadow: 0 0 10px #5b4cff;
+  animation: scan 1.5s ease-in-out infinite;
+}
+
+@keyframes scan {
+  0%, 100% { transform: translateY(-80px); }
+  50% { transform: translateY(80px); }
+}
+
+.camera-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-camera {
+  flex: 1;
+  min-width: 120px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #5b4cff;
+  color: white;
+}
+
+.btn-camera:hover { opacity: 0.9; }
+.btn-camera:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-capture { background: #e74c3c; }
+.btn-stop { background: #666; }
+.btn-simulate { background: #2ecc71; }
+
+.manual-barcode {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.manual-barcode h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: #333;
+}
+
+.manual-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.manual-input-row input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.manual-input-row input:focus {
+  outline: none;
+  border-color: #5b4cff;
+}
+
+.manual-input-row button {
+  padding: 10px 20px;
+  background: #5b4cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.results-section {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.results-section h2 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  color: #1a1a2e;
+}
+
+.empty-results {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+.scanned-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.scanned-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.item-number {
+  width: 28px;
+  height: 28px;
+  background: #5b4cff;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.item-address { font-size: 14px; color: #333; }
+.item-time { font-size: 12px; color: #999; }
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: #ccc;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.btn-remove:hover { color: #e74c3c; }
+
+.btn-proceed {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #5b4cff, #7c6cff);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-proceed:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-proceed:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(91, 76, 255, 0.4);
+}

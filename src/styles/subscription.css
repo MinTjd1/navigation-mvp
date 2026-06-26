@@ -1,0 +1,152 @@
+.subscription-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.subscription-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 40px;
+}
+
+.subscription-header h1 {
+  font-size: 32px;
+  margin: 0 0 8px;
+}
+
+.subscription-header p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  margin: 0;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 960px;
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.plan-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 32px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.plan-card:hover {
+  transform: translateY(-4px);
+}
+
+.plan-popular {
+  border: 3px solid #5b4cff;
+  transform: scale(1.05);
+}
+
+.plan-popular:hover {
+  transform: scale(1.05) translateY(-4px);
+}
+
+.plan-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #f0f0f0;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.plan-badge.popular {
+  background: #5b4cff;
+  color: white;
+}
+
+.plan-card h2 {
+  font-size: 24px;
+  color: #1a1a2e;
+  margin: 0 0 16px;
+}
+
+.plan-price {
+  margin-bottom: 24px;
+}
+
+.plan-price .price {
+  font-size: 36px;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+.plan-price .period {
+  color: #888;
+  font-size: 16px;
+}
+
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  text-align: left;
+}
+
+.plan-features li {
+  padding: 8px 0;
+  font-size: 14px;
+  color: #555;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.btn-plan {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-basic {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn-pro {
+  background: linear-gradient(135deg, #5b4cff, #7c6cff);
+  color: white;
+}
+
+.btn-enterprise {
+  background: linear-gradient(135deg, #1a1a2e, #302b63);
+  color: white;
+}
+
+.btn-plan:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-skip {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 12px 24px;
+  transition: color 0.2s;
+}
+
+.btn-skip:hover {
+  color: white;
+}
