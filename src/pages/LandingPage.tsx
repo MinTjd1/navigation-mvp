@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/landing.css';
@@ -5,13 +6,38 @@ import '../styles/landing.css';
 export default function LandingPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   function handleStart() {
-    navigate(user ? '/user-type' : '/login');
+    if (user) {
+      navigate('/user-type');
+    } else {
+      setShowAuthModal(true);
+    }
   }
 
   return (
     <div className="landing">
+      {/* Auth Modal */}
+      {showAuthModal && (
+        <div className="auth-modal-overlay" onClick={() => setShowAuthModal(false)}>
+          <div className="auth-modal" onClick={e => e.stopPropagation()}>
+            <button className="auth-modal-close" onClick={() => setShowAuthModal(false)}>✕</button>
+            <div className="auth-modal-icon">🗺️</div>
+            <h2>NaviOptima 시작하기</h2>
+            <p>로그인 또는 회원가입을 선택해주세요</p>
+            <div className="auth-modal-buttons">
+              <button className="btn-modal-login" onClick={() => navigate('/login')}>
+                기존 계정으로 로그인
+              </button>
+              <button className="btn-modal-signup" onClick={() => navigate('/signup')}>
+                새 계정 만들기 (회원가입)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Hero */}
       <section className="hero">
         <div className="hero-bg-grid" />
@@ -21,14 +47,8 @@ export default function LandingPage() {
             <span className="nav-logo-text">NaviOptima</span>
           </div>
           <div className="nav-links">
-            {user ? (
-              <button className="btn-nav-cta" onClick={() => navigate('/user-type')}>대시보드</button>
-            ) : (
-              <>
-                <button className="btn-nav-ghost" onClick={() => navigate('/login')}>로그인</button>
-                <button className="btn-nav-cta" onClick={() => navigate('/signup')}>무료 시작</button>
-              </>
-            )}
+            <button className="btn-nav-ghost" onClick={() => navigate('/login')}>로그인</button>
+            <button className="btn-nav-cta" onClick={() => navigate('/signup')}>무료 시작</button>
           </div>
         </nav>
 
@@ -187,6 +207,7 @@ export default function LandingPage() {
           <h2>지금 바로 시작하세요</h2>
           <p>대전 지역 다중 목적지 경로 최적화를 무료로 체험해보세요.</p>
           <button className="btn-cta" onClick={handleStart}>무료로 시작하기</button>
+
         </div>
       </section>
 
