@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
+import { getKakaoApiKey, setKakaoApiKey, removeKakaoApiKey, validateKakaoKey } from '../utils/kakaoGeocode';
 import 'leaflet/dist/leaflet.css';
 import '../styles/generalinput.css';
 
@@ -19,6 +20,11 @@ export default function GeneralInputPage() {
     { id: crypto.randomUUID(), address: '' },
     { id: crypto.randomUUID(), address: '' },
   ]);
+  const [kakaoKey, setKakaoKey] = useState(getKakaoApiKey() || '');
+  const [kakaoKeyStatus, setKakaoKeyStatus] = useState<'none' | 'valid' | 'invalid' | 'checking'>(
+    getKakaoApiKey() ? 'valid' : 'none'
+  );
+  const [showApiSettings, setShowApiSettings] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
@@ -105,6 +111,29 @@ export default function GeneralInputPage() {
       id: crypto.randomUUID(),
       address,
     })));
+  }
+
+  async function handleSaveKakaoKey() {
+    const trimmed = kakaoKey.trim();
+    if (!trimmed) {
+      removeKakaoApiKey();
+      setKakaoKeyStatus('none');
+      return;
+    }
+    setKakaoKeyStatus('checking');
+    const valid = await validateKakaoKey(trimmed);
+    if (valid) {
+      setKakaoApiKey(trimmed);
+      setKakaoKeyStatus('valid');
+    } else {
+      setKakaoKeyStatus('invalid');
+    }
+  }
+
+  function handleRemoveKakaoKey() {
+    removeKakaoApiKey();
+    setKakaoKey('');
+    setKakaoKeyStatus('none');
   }
 
   function handleProceed() {
@@ -198,6 +227,50 @@ export default function GeneralInputPage() {
         <button className="btn-add-dest" onClick={addDestination}>
           + 목적지 추가
         </button>
+      </div>
+
+      <div className="general-section api-section">
+        <button
+          className="api-toggle-btn"
+          onClick={() => setShowApiSettings(!showApiSettings)}
+        >
+          <span>{showApiSettings ? '▼' : '▶'} Kakao API 설정</span>
+          <span className={`api-status-badge ${kakaoKeyStatus}`}>
+            {kakaoKeyStatus === 'valid' ? '연결됨' :
+             kakaoKeyStatus === 'invalid' ? '유효하지 않음' :
+             kakaoKeyStatus === 'checking' ? '확인 중...' : '미설정'}
+          </span>
+        </button>
+
+        {showApiSettings && (
+          <div className="api-settings-body">
+            <p className="api-desc">
+              Kakao REST API 키를 입력하면 더 정확한 한국 주소 검색이 가능합니다.
+              키가 없어도 기본 검색으로 동작합니다.
+            </p>
+            <div className="api-key-row">
+              <input
+                type="password"
+                value={kakaoKey}
+                onChange={e => { setKakaoKey(e.target.value); setKakaoKeyStatus('none'); }}
+                placeholder="Kakao REST API 키 입력"
+                className="api-key-input"
+              />
+              <button className="btn-api-save" onClick={handleSaveKakaoKey} disabled={kakaoKeyStatus === 'checking'}>
+                {kakaoKeyStatus === 'checking' ? '확인 중...' : '저장'}
+              </button>
+              {kakaoKeyStatus === 'valid' && (
+                <button className="btn-api-remove" onClick={handleRemoveKakaoKey}>삭제</button>
+              )}
+            </div>
+            {kakaoKeyStatus === 'invalid' && (
+              <p className="api-error">API 키가 유효하지 않습니다. 다시 확인해주세요.</p>
+            )}
+            {kakaoKeyStatus === 'valid' && (
+              <p className="api-success">Kakao API가 정상적으로 연결되었습니다.</p>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="general-actions">

@@ -1,4 +1,5 @@
 import type { Address } from '../types';
+import { kakaoGeocode, getKakaoApiKey } from './kakaoGeocode';
 
 export const ORIGIN_POINTS = {
   hanjin: {
@@ -170,30 +171,44 @@ export async function geocodeAddress(query: string): Promise<GeoResult> {
   const known = findKnownPlace(query);
   if (known) return known;
 
-  // 2. Try Nominatim with Daejeon viewbox
+  // 2. Try Kakao API (best for Korean addresses/place names)
+  const kakaoKey = getKakaoApiKey();
+  if (kakaoKey) {
+    const kakaoResult = await kakaoGeocode(query, kakaoKey);
+    if (kakaoResult) {
+      return {
+        lat: kakaoResult.lat,
+        lng: kakaoResult.lng,
+        displayName: kakaoResult.placeName,
+        roadAddress: kakaoResult.roadAddress,
+      };
+    }
+  }
+
+  // 3. Try Nominatim with Daejeon viewbox
   const withDaejeon = query.includes('대전') ? query : `대전 ${query}`;
   let result = await searchNominatim(withDaejeon, true);
   if (result) return result;
 
-  // 3. Try without viewbox restriction
+  // 4. Try without viewbox restriction
   result = await searchNominatim(withDaejeon, false);
   if (result) return result;
 
-  // 4. Try with full city name
+  // 5. Try with full city name
   if (!query.includes('대전광역시')) {
     result = await searchNominatim(`대전광역시 ${query}`, false);
     if (result) return result;
   }
 
-  // 5. Try original query alone
+  // 6. Try original query alone
   result = await searchNominatim(query, false);
   if (result) return result;
 
-  // 6. Fallback: 동-level lookup
+  // 7. Fallback: 동-level lookup
   const dong = findDongLocation(query);
   if (dong) return dong;
 
-  // 7. Final fallback: Daejeon center
+  // 8. Final fallback: Daejeon center
   return {
     lat: 36.3504,
     lng: 127.3845,

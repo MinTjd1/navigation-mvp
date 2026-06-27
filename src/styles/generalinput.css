@@ -258,3 +258,136 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 15px rgba(91, 76, 255, 0.4);
 }
+
+/* API Settings */
+.api-section {
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.api-toggle-btn {
+  width: 100%;
+  padding: 18px 24px;
+  background: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.api-toggle-btn:hover {
+  background: #fafafa;
+}
+
+.api-status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.api-status-badge.none {
+  background: #f0f0f0;
+  color: #999;
+}
+
+.api-status-badge.valid {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.api-status-badge.invalid {
+  background: #fce4ec;
+  color: #c62828;
+}
+
+.api-status-badge.checking {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.api-settings-body {
+  padding: 0 24px 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.api-desc {
+  font-size: 13px;
+  color: #888;
+  margin: 16px 0 12px;
+  line-height: 1.5;
+}
+
+.api-key-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.api-key-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.api-key-input:focus {
+  outline: none;
+  border-color: #5b4cff;
+}
+
+.btn-api-save {
+  padding: 10px 18px;
+  background: #5b4cff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.btn-api-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-api-save:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-api-remove {
+  padding: 10px 14px;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #e74c3c;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-api-remove:hover {
+  background: #fce4ec;
+}
+
+.api-error {
+  font-size: 13px;
+  color: #c62828;
+  margin: 8px 0 0;
+}
+
+.api-success {
+  font-size: 13px;
+  color: #2e7d32;
+  margin: 8px 0 0;
+}
