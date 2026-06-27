@@ -8,7 +8,11 @@ export default function UserTypePage() {
 
   function selectType(type: 'driver' | 'general') {
     updateUser({ userType: type });
-    navigate('/origin-select');
+    if (type === 'driver') {
+      navigate('/origin-select');
+    } else {
+      navigate('/general-input');
+    }
   }
 
   return (

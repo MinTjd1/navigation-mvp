@@ -24,10 +24,14 @@ function createNumberedIcon(num: number, color: string) {
   });
 }
 
-function createOriginIcon() {
+function createOriginIcon(isGps: boolean) {
+  const bg = isGps ? '#5b4cff' : '#ff6b35';
+  const shadow = isGps ? 'rgba(91,76,255,0.5)' : 'rgba(255,107,53,0.5)';
+  const label = isGps ? '📍' : 'S';
+  const fontSize = isGps ? '18px' : '20px';
   return L.divIcon({
     className: 'origin-marker',
-    html: `<div style="background:#ff6b35;color:white;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:20px;border:4px solid white;box-shadow:0 3px 10px rgba(255,107,53,0.5);">S</div>`,
+    html: `<div style="background:${bg};color:white;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:${fontSize};border:4px solid white;box-shadow:0 3px 10px ${shadow};">${label}</div>`,
     iconSize: [40, 40],
     iconAnchor: [20, 20],
   });
@@ -96,6 +100,8 @@ export default function NavigationPage() {
     const bounds = L.latLngBounds([]);
     const coords: L.LatLng[] = [];
 
+    const isGpsOrigin = origin?.name === '내 현재 위치';
+
     routeResult.orderedAddresses.forEach((addr, i) => {
       const latlng = L.latLng(addr.lat, addr.lng);
       bounds.extend(latlng);
@@ -103,10 +109,10 @@ export default function NavigationPage() {
 
       const isOrigin = addr.id === 'origin';
       const icon = isOrigin
-        ? createOriginIcon()
+        ? createOriginIcon(isGpsOrigin)
         : createNumberedIcon(origin ? i : i + 1, COLORS[(origin ? i - 1 : i) % COLORS.length]);
       const popupText = isOrigin
-        ? `<b>출발지</b><br/>${origin?.name}<br/>${addr.address}`
+        ? `<b>${isGpsOrigin ? '내 현재 위치' : '출발지'}</b><br/>${origin?.name}<br/>${addr.address}`
         : `<b>${origin ? i : i + 1}번째 방문</b><br/>${addr.address}`;
 
       L.marker(latlng, { icon }).addTo(map).bindPopup(popupText);
@@ -191,7 +197,7 @@ export default function NavigationPage() {
           <h1>최적화된 경로</h1>
           {origin && (
             <div className="origin-badge">
-              📦 출발: {origin.name}
+              {origin.name === '내 현재 위치' ? '📍' : '📦'} 출발: {origin.name}
             </div>
           )}
           <div className="route-summary">

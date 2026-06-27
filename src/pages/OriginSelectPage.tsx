@@ -1,13 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { ORIGIN_POINTS } from '../utils/geocoding';
 import '../styles/originselect.css';
 
 export default function OriginSelectPage() {
   const [selected, setSelected] = useState<'hanjin' | 'coupang' | null>(null);
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   function handleProceed() {
     if (!selected) {
@@ -16,12 +14,7 @@ export default function OriginSelectPage() {
     }
     const origin = ORIGIN_POINTS[selected];
     sessionStorage.setItem('selectedOrigin', JSON.stringify(origin));
-
-    if (user?.userType === 'driver') {
-      navigate('/ocr-scan');
-    } else {
-      navigate('/manual-input');
-    }
+    navigate('/ocr-scan');
   }
 
   return (
