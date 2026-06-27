@@ -41,6 +41,26 @@
   gap: 12px;
 }
 
+.nav-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+}
+
+.nav-user-icon {
+  font-size: 16px;
+}
+
+.nav-user-email {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+}
+
 .btn-nav-ghost {
   padding: 10px 22px;
   background: transparent;

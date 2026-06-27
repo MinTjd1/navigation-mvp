@@ -20,6 +20,12 @@ export default function LandingPage() {
             <span className="nav-logo-icon">🗺️</span>
             <span className="nav-logo-text">NaviOptima</span>
           </div>
+          {user && (
+            <div className="nav-user-badge">
+              <span className="nav-user-icon">👤</span>
+              <span className="nav-user-email">{user.email}</span>
+            </div>
+          )}
         </nav>
 
         <div className="hero-content">
