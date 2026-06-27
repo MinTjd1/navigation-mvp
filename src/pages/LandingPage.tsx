@@ -10,7 +10,7 @@ export default function LandingPage() {
 
   function handleStart() {
     if (user) {
-      navigate('/user-type');
+      navigate('/subscription');
     } else {
       setShowAuthModal(true);
     }
