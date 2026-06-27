@@ -135,7 +135,7 @@ export default function NavigationPage() {
     });
 
     function addArrows(points: L.LatLng[]) {
-      const step = Math.max(1, Math.floor(points.length / 20));
+      const step = Math.max(1, Math.floor(points.length / 15));
       for (let i = 0; i < points.length - step; i += step) {
         const from = points[i];
         const to = points[Math.min(i + step, points.length - 1)];
@@ -144,9 +144,9 @@ export default function NavigationPage() {
         L.marker(mid, {
           icon: L.divIcon({
             className: 'route-arrow',
-            html: `<div style="transform:rotate(${90 - angle}deg);color:#5b4cff;font-size:18px;font-weight:900;text-shadow:0 0 3px white,0 0 3px white;">▶</div>`,
-            iconSize: [18, 18],
-            iconAnchor: [9, 9],
+            html: `<div style="transform:rotate(${90 - angle}deg);color:white;font-size:14px;font-weight:900;line-height:1;opacity:0.95;">➤</div>`,
+            iconSize: [14, 14],
+            iconAnchor: [7, 7],
           }),
           interactive: false,
         }).addTo(map);
@@ -159,7 +159,7 @@ export default function NavigationPage() {
 
       L.polyline(latlngs, {
         color: '#5b4cff',
-        weight: 5,
+        weight: 8,
         opacity: 0.85,
       }).addTo(map);
       addArrows(latlngs);
@@ -167,7 +167,7 @@ export default function NavigationPage() {
       const coords = routeResult.orderedAddresses.map(a => L.latLng(a.lat, a.lng));
       L.polyline(coords, {
         color: '#5b4cff',
-        weight: 4,
+        weight: 8,
         opacity: 0.8,
         dashArray: '10, 10',
       }).addTo(map);
