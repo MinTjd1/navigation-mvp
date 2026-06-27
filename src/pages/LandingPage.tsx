@@ -46,10 +46,6 @@ export default function LandingPage() {
             <span className="nav-logo-icon">🗺️</span>
             <span className="nav-logo-text">NaviOptima</span>
           </div>
-          <div className="nav-links">
-            <button className="btn-nav-ghost" onClick={() => navigate('/login')}>로그인</button>
-            <button className="btn-nav-cta" onClick={() => navigate('/signup')}>무료 시작</button>
-          </div>
         </nav>
 
         <div className="hero-content">
