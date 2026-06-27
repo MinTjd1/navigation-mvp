@@ -7,11 +7,7 @@ export default function LandingPage() {
   const { user } = useAuth();
 
   function handleStart() {
-    if (user) {
-      navigate('/subscription');
-    } else {
-      navigate('/login');
-    }
+    navigate('/login');
   }
 
   return (
