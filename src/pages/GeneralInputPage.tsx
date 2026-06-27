@@ -95,11 +95,11 @@ export default function GeneralInputPage() {
 
   function loadSampleData() {
     const samples = [
-      '대전광역시 서구 둔산로 100',
-      '대전광역시 유성구 대학로 99',
-      '대전광역시 동구 대전로 689',
-      '대전광역시 중구 중앙로 101',
-      '대전광역시 대덕구 한밭대로 1233',
+      '대전역',
+      '대전시청',
+      '카이스트',
+      '충남대학교',
+      '대전 성심당 본점',
     ];
     setDestinations(samples.map(address => ({
       id: crypto.randomUUID(),
@@ -181,7 +181,7 @@ export default function GeneralInputPage() {
                 type="text"
                 value={dest.address}
                 onChange={e => updateAddress(dest.id, e.target.value)}
-                placeholder="대전광역시 ..."
+                placeholder="장소명 또는 주소 (예: 대전역, 카이스트)"
                 className="dest-input"
               />
               <button

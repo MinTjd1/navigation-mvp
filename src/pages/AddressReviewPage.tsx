@@ -7,6 +7,8 @@ import '../styles/addressreview.css';
 export default function AddressReviewPage() {
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  const [geocodeProgress, setGeocodeProgress] = useState({ done: 0, total: 0 });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,8 +18,23 @@ export default function AddressReviewPage() {
       return;
     }
     const addressStrings: string[] = JSON.parse(saved);
-    const parsed = addressStrings.map((addr, i) => createAddressFromString(addr, i));
-    setAddresses(parsed);
+
+    async function geocodeAll() {
+      setIsGeocoding(true);
+      setGeocodeProgress({ done: 0, total: addressStrings.length });
+
+      const results: Address[] = [];
+      for (let i = 0; i < addressStrings.length; i++) {
+        if (i > 0) await new Promise(r => setTimeout(r, 250));
+        const addr = await createAddressFromString(addressStrings[i], i);
+        results.push(addr);
+        setGeocodeProgress({ done: i + 1, total: addressStrings.length });
+      }
+      setAddresses(results);
+      setIsGeocoding(false);
+    }
+
+    geocodeAll();
   }, [navigate]);
 
   function handleDragStart(index: number) {
@@ -62,12 +79,25 @@ export default function AddressReviewPage() {
         <h1>주소 확인 및 정렬</h1>
         <p>주소를 확인하고 드래그하여 순서를 변경할 수 있습니다</p>
         <div className="review-actions-top">
-          <button className="btn-sort" onClick={sortByRegion}>
+          <button className="btn-sort" onClick={sortByRegion} disabled={isGeocoding}>
             🔤 지역별 정렬
           </button>
           <span className="address-count">총 {addresses.length}건</span>
         </div>
       </div>
+
+      {isGeocoding && (
+        <div className="geocoding-progress">
+          <div className="geocoding-spinner" />
+          <span>주소 위치 확인 중... ({geocodeProgress.done}/{geocodeProgress.total})</span>
+          <div className="geocoding-bar">
+            <div
+              className="geocoding-bar-fill"
+              style={{ width: `${(geocodeProgress.done / geocodeProgress.total) * 100}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="address-list">
         {addresses.map((addr, index) => (
@@ -98,7 +128,7 @@ export default function AddressReviewPage() {
         <button className="btn-back" onClick={() => navigate(-1)}>
           ← 뒤로
         </button>
-        <button className="btn-optimize" onClick={handleOptimize}>
+        <button className="btn-optimize" onClick={handleOptimize} disabled={isGeocoding || addresses.length < 2}>
           🚀 플로이드-워셜 경로 최적화 실행
         </button>
       </div>

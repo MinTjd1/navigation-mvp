@@ -87,7 +87,7 @@ const DAEJEON_LOCATIONS: Record<string, { lat: number; lng: number }> = {
   '비래동': { lat: 36.4000, lng: 127.4350 },
 };
 
-export function geocodeAddress(address: string): { lat: number; lng: number } {
+function geocodeAddressFallback(address: string): { lat: number; lng: number } {
   for (const [keyword, coords] of Object.entries(DAEJEON_LOCATIONS)) {
     if (address.includes(keyword)) {
       const jitter = () => (Math.random() - 0.5) * 0.005;
@@ -102,13 +102,42 @@ export function geocodeAddress(address: string): { lat: number; lng: number } {
   };
 }
 
-export function createAddressFromString(address: string, index: number): Address {
-  const coords = geocodeAddress(address);
+export async function geocodeAddress(query: string): Promise<{ lat: number; lng: number; displayName: string }> {
+  const searchQuery = query.includes('대전') ? query : `대전 ${query}`;
+
+  const params = new URLSearchParams({
+    q: searchQuery,
+    format: 'json',
+    countrycodes: 'kr',
+    limit: '1',
+  });
+
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`);
+    const data = await res.json();
+
+    if (data.length > 0) {
+      return {
+        lat: parseFloat(data[0].lat),
+        lng: parseFloat(data[0].lon),
+        displayName: data[0].display_name,
+      };
+    }
+  } catch {
+    // fall through to fallback
+  }
+
+  const coords = geocodeAddressFallback(query);
+  return { ...coords, displayName: query };
+}
+
+export async function createAddressFromString(address: string, index: number): Promise<Address> {
+  const result = await geocodeAddress(address);
   return {
     id: crypto.randomUUID(),
     address,
-    lat: coords.lat,
-    lng: coords.lng,
+    lat: result.lat,
+    lng: result.lng,
     label: `목적지 ${index + 1}`,
   };
 }

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
 import type { Address, RouteResult } from '../types';
 import { buildDistanceMatrix, optimizeRoute } from '../algorithms/floydWarshall';
+import { getOSRMDistanceMatrix, getOSRMRoute } from '../utils/routing';
+import type { OSRMRouteResult } from '../utils/routing';
 import '../styles/navigation.css';
 import 'leaflet/dist/leaflet.css';
 
@@ -39,8 +41,10 @@ function createOriginIcon(isGps: boolean) {
 
 export default function NavigationPage() {
   const [routeResult, setRouteResult] = useState<RouteResult | null>(null);
+  const [osrmRoute, setOsrmRoute] = useState<OSRMRouteResult | null>(null);
   const [origin, setOrigin] = useState<OriginInfo | null>(null);
   const [isOptimizing, setIsOptimizing] = useState(true);
+  const [optimizeStep, setOptimizeStep] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
   const [showMatrix, setShowMatrix] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
@@ -55,36 +59,49 @@ export default function NavigationPage() {
       return;
     }
 
+    let parsedOrigin: OriginInfo | null = null;
     if (originData) {
-      setOrigin(JSON.parse(originData));
+      parsedOrigin = JSON.parse(originData);
+      setOrigin(parsedOrigin);
     }
 
     const addresses: Address[] = JSON.parse(saved);
 
-    if (originData) {
-      const parsedOrigin: OriginInfo = JSON.parse(originData);
-      const originAddress: Address = {
-        id: 'origin',
-        address: parsedOrigin.address,
-        lat: parsedOrigin.lat,
-        lng: parsedOrigin.lng,
-        label: '출발지',
-      };
-      const allAddresses = [originAddress, ...addresses];
-      const distMatrix = buildDistanceMatrix(allAddresses);
+    async function runOptimization() {
+      let allAddresses = addresses;
+      if (parsedOrigin) {
+        const originAddress: Address = {
+          id: 'origin',
+          address: parsedOrigin.address,
+          lat: parsedOrigin.lat,
+          lng: parsedOrigin.lng,
+          label: '출발지',
+        };
+        allAddresses = [originAddress, ...addresses];
+      }
+
+      setOptimizeStep(1);
+      let distMatrix = await getOSRMDistanceMatrix(allAddresses);
+      if (!distMatrix) {
+        distMatrix = buildDistanceMatrix(allAddresses);
+      }
+
+      setOptimizeStep(2);
       const result = optimizeRoute(allAddresses, distMatrix);
-      setTimeout(() => {
-        setRouteResult(result);
-        setIsOptimizing(false);
-      }, 2000);
-    } else {
-      const distMatrix = buildDistanceMatrix(addresses);
-      const result = optimizeRoute(addresses, distMatrix);
-      setTimeout(() => {
-        setRouteResult(result);
-        setIsOptimizing(false);
-      }, 2000);
+
+      setOptimizeStep(3);
+      const routeData = await getOSRMRoute(result.orderedAddresses);
+
+      if (routeData) {
+        result.totalDistance = routeData.totalDistance;
+      }
+
+      setRouteResult(result);
+      setOsrmRoute(routeData);
+      setIsOptimizing(false);
     }
+
+    runOptimization();
   }, [navigate]);
 
   useEffect(() => {
@@ -98,14 +115,11 @@ export default function NavigationPage() {
     }).addTo(map);
 
     const bounds = L.latLngBounds([]);
-    const coords: L.LatLng[] = [];
-
     const isGpsOrigin = origin?.name === '내 현재 위치';
 
     routeResult.orderedAddresses.forEach((addr, i) => {
       const latlng = L.latLng(addr.lat, addr.lng);
       bounds.extend(latlng);
-      coords.push(latlng);
 
       const isOrigin = addr.id === 'origin';
       const icon = isOrigin
@@ -118,26 +132,41 @@ export default function NavigationPage() {
       L.marker(latlng, { icon }).addTo(map).bindPopup(popupText);
     });
 
-    L.polyline(coords, {
-      color: '#3498db',
-      weight: 4,
-      opacity: 0.8,
-      dashArray: '10, 10',
-    }).addTo(map);
+    if (osrmRoute && osrmRoute.geometry.length > 1) {
+      const latlngs = osrmRoute.geometry.map(([lat, lng]) => L.latLng(lat, lng));
+      latlngs.forEach(ll => bounds.extend(ll));
 
-    for (let i = 0; i < coords.length - 1; i++) {
+      L.polyline(latlngs, {
+        color: '#3498db',
+        weight: 5,
+        opacity: 0.85,
+      }).addTo(map);
+    } else {
+      const coords = routeResult.orderedAddresses.map(a => L.latLng(a.lat, a.lng));
+      L.polyline(coords, {
+        color: '#3498db',
+        weight: 4,
+        opacity: 0.8,
+        dashArray: '10, 10',
+      }).addTo(map);
+    }
+
+    const ordered = routeResult.orderedAddresses;
+    for (let i = 0; i < ordered.length - 1; i++) {
       const mid = L.latLng(
-        (coords[i].lat + coords[i + 1].lat) / 2,
-        (coords[i].lng + coords[i + 1].lng) / 2
+        (ordered[i].lat + ordered[i + 1].lat) / 2,
+        (ordered[i].lng + ordered[i + 1].lng) / 2
       );
-      const dist = routeResult.distanceMatrix[i]?.[i + 1];
+      const dist = osrmRoute
+        ? osrmRoute.legDistances[i]
+        : routeResult.distanceMatrix[i]?.[i + 1];
       if (dist !== undefined) {
         L.marker(mid, {
           icon: L.divIcon({
             className: 'distance-label',
-            html: `<div style="background:white;padding:2px 6px;border-radius:4px;font-size:11px;border:1px solid #ccc;white-space:nowrap;">${dist.toFixed(1)}km</div>`,
-            iconSize: [60, 20],
-            iconAnchor: [30, 10],
+            html: `<div style="background:white;padding:2px 8px;border-radius:6px;font-size:12px;border:1px solid #ccc;white-space:nowrap;font-weight:600;color:#333;">${dist.toFixed(1)}km</div>`,
+            iconSize: [70, 24],
+            iconAnchor: [35, 12],
           }),
         }).addTo(map);
       }
@@ -149,7 +178,7 @@ export default function NavigationPage() {
       map.remove();
       mapInstanceRef.current = null;
     };
-  }, [routeResult, origin]);
+  }, [routeResult, osrmRoute, origin]);
 
   if (isOptimizing) {
     return (
@@ -174,10 +203,10 @@ export default function NavigationPage() {
             <div className="progress-fill" />
           </div>
           <div className="algo-steps">
-            <div className="algo-step active">1. 거리 행렬 생성</div>
-            <div className="algo-step active">2. 플로이드-워셜 실행</div>
-            <div className="algo-step">3. 최적 방문 순서 계산</div>
-            <div className="algo-step">4. 경로 생성</div>
+            <div className={`algo-step ${optimizeStep >= 1 ? 'active' : ''}`}>1. 실제 도로 거리 행렬 생성 (OSRM)</div>
+            <div className={`algo-step ${optimizeStep >= 2 ? 'active' : ''}`}>2. 플로이드-워셜 최적화 실행</div>
+            <div className={`algo-step ${optimizeStep >= 3 ? 'active' : ''}`}>3. 실제 도로 경로 생성</div>
+            <div className={`algo-step ${!isOptimizing ? 'active' : ''}`}>4. 경로 완성</div>
           </div>
         </div>
       </div>
@@ -202,19 +231,25 @@ export default function NavigationPage() {
           )}
           <div className="route-summary">
             <div className="summary-item">
-              <span className="summary-label">배송지</span>
+              <span className="summary-label">목적지</span>
               <span className="summary-value">{destCount}곳</span>
             </div>
             <div className="summary-item">
-              <span className="summary-label">총 거리</span>
+              <span className="summary-label">총 도로 거리</span>
               <span className="summary-value">{routeResult.totalDistance.toFixed(1)}km</span>
             </div>
           </div>
+          {osrmRoute && (
+            <div className="route-type-badge">🛣️ 실제 도로 기반 경로</div>
+          )}
         </div>
 
         <div className="route-steps">
           {routeResult.orderedAddresses.map((addr, i) => {
             const isOrigin = addr.id === 'origin';
+            const legDist = osrmRoute
+              ? osrmRoute.legDistances[i]
+              : routeResult.distanceMatrix[i]?.[i + 1];
             return (
               <div
                 key={addr.id}
@@ -223,7 +258,7 @@ export default function NavigationPage() {
               >
                 <div
                   className="step-marker"
-                  style={{ background: isOrigin ? '#ff6b35' : COLORS[(origin ? i - 1 : i) % COLORS.length] }}
+                  style={{ background: isOrigin ? (origin?.name === '내 현재 위치' ? '#5b4cff' : '#ff6b35') : COLORS[(origin ? i - 1 : i) % COLORS.length] }}
                 >
                   {isOrigin ? 'S' : (origin ? i : i + 1)}
                 </div>
@@ -231,10 +266,9 @@ export default function NavigationPage() {
                   <span className="step-address">
                     {isOrigin ? `[출발] ${origin?.name}` : addr.address}
                   </span>
-                  {i < routeResult.orderedAddresses.length - 1 && (
+                  {i < routeResult.orderedAddresses.length - 1 && legDist !== undefined && (
                     <span className="step-distance">
-                      → 다음까지{' '}
-                      {routeResult.distanceMatrix[i]?.[i + 1]?.toFixed(1) ?? '?'}km
+                      → 다음까지 {legDist.toFixed(1)}km
                     </span>
                   )}
                 </div>
@@ -250,6 +284,9 @@ export default function NavigationPage() {
         {showMatrix && (
           <div className="distance-matrix">
             <h3>플로이드-워셜 최단거리 행렬 (km)</h3>
+            <p className="matrix-note">
+              {osrmRoute ? '실제 도로 거리 기반' : 'Haversine 직선 거리 기반'}
+            </p>
             <div className="matrix-table-wrapper">
               <table className="matrix-table">
                 <thead>
@@ -268,7 +305,7 @@ export default function NavigationPage() {
                       </td>
                       {row.map((val, j) => (
                         <td key={j} className={i === j ? 'diagonal' : ''}>
-                          {val.toFixed(1)}
+                          {val === Infinity ? '∞' : val.toFixed(1)}
                         </td>
                       ))}
                     </tr>

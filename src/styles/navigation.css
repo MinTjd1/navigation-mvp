@@ -100,7 +100,7 @@
   border-radius: 8px;
   font-size: 14px;
   color: rgba(255, 255, 255, 0.4);
-  width: 280px;
+  width: 320px;
 }
 
 .algo-step.active {
@@ -159,6 +159,23 @@
 .origin-step {
   background: #fff5f0 !important;
   border-left: 3px solid #ff6b35;
+}
+
+.route-type-badge {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.matrix-note {
+  font-size: 11px;
+  color: #999;
+  margin: -8px 0 10px;
 }
 
 .route-summary {
