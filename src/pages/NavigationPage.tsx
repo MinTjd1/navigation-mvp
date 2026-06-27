@@ -110,8 +110,9 @@ export default function NavigationPage() {
     const map = L.map(mapRef.current).setView([36.3504, 127.3845], 12);
     mapInstanceRef.current = map;
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors',
+    L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      attribution: '&copy; Google Maps',
+      maxZoom: 20,
     }).addTo(map);
 
     const bounds = L.latLngBounds([]);

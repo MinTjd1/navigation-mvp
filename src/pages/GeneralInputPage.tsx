@@ -59,8 +59,9 @@ export default function GeneralInputPage() {
       const map = L.map(mapRef.current).setView([location.lat, location.lng], 14);
       mapInstanceRef.current = map;
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap',
+      L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        attribution: '&copy; Google Maps',
+        maxZoom: 20,
       }).addTo(map);
 
       const marker = L.marker([location.lat, location.lng], {
