@@ -245,9 +245,8 @@
 /* --- Hero Visual (floating cards) --- */
 .hero-visual {
   position: absolute;
-  right: 60px;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 40px;
+  bottom: 40px;
   width: 380px;
   height: 420px;
   z-index: 1;
