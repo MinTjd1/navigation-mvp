@@ -13,6 +13,7 @@ export interface Address {
   lat: number;
   lng: number;
   label?: string;
+  roadAddress?: string;
 }
 
 export interface RouteResult {

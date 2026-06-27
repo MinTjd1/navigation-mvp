@@ -113,6 +113,9 @@ export default function AddressReviewPage() {
             <span className="addr-number">{index + 1}</span>
             <div className="addr-info">
               <span className="addr-text">{addr.address}</span>
+              {addr.roadAddress && addr.roadAddress !== addr.address && (
+                <span className="addr-road">📍 {addr.roadAddress}</span>
+              )}
               <span className="addr-coords">
                 위도: {addr.lat.toFixed(4)}, 경도: {addr.lng.toFixed(4)}
               </span>

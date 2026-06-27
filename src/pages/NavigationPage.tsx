@@ -125,9 +125,11 @@ export default function NavigationPage() {
       const icon = isOrigin
         ? createOriginIcon(isGpsOrigin)
         : createNumberedIcon(origin ? i : i + 1, COLORS[(origin ? i - 1 : i) % COLORS.length]);
+      const roadInfo = addr.roadAddress && addr.roadAddress !== addr.address
+        ? `<br/><span style="color:#5b4cff;font-size:12px;">📍 ${addr.roadAddress}</span>` : '';
       const popupText = isOrigin
         ? `<b>${isGpsOrigin ? '내 현재 위치' : '출발지'}</b><br/>${origin?.name}<br/>${addr.address}`
-        : `<b>${origin ? i : i + 1}번째 방문</b><br/>${addr.address}`;
+        : `<b>${origin ? i : i + 1}번째 방문</b><br/>${addr.address}${roadInfo}`;
 
       L.marker(latlng, { icon }).addTo(map).bindPopup(popupText);
     });
@@ -266,6 +268,9 @@ export default function NavigationPage() {
                   <span className="step-address">
                     {isOrigin ? `[출발] ${origin?.name}` : addr.address}
                   </span>
+                  {!isOrigin && addr.roadAddress && addr.roadAddress !== addr.address && (
+                    <span className="step-road">📍 {addr.roadAddress}</span>
+                  )}
                   {i < routeResult.orderedAddresses.length - 1 && legDist !== undefined && (
                     <span className="step-distance">
                       → 다음까지 {legDist.toFixed(1)}km
