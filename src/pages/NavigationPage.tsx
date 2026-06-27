@@ -134,44 +134,23 @@ export default function NavigationPage() {
       L.marker(latlng, { icon }).addTo(map).bindPopup(popupText);
     });
 
-    function addArrows(points: L.LatLng[]) {
-      const step = Math.max(1, Math.floor(points.length / 15));
-      for (let i = 0; i < points.length - step; i += step) {
-        const from = points[i];
-        const to = points[Math.min(i + step, points.length - 1)];
-        const angle = Math.atan2(to.lng - from.lng, to.lat - from.lat) * (180 / Math.PI);
-        const mid = L.latLng((from.lat + to.lat) / 2, (from.lng + to.lng) / 2);
-        L.marker(mid, {
-          icon: L.divIcon({
-            className: 'route-arrow',
-            html: `<div style="transform:rotate(${90 - angle}deg);color:white;font-size:14px;font-weight:900;line-height:1;opacity:0.95;">➤</div>`,
-            iconSize: [14, 14],
-            iconAnchor: [7, 7],
-          }),
-          interactive: false,
-        }).addTo(map);
-      }
-    }
-
     if (osrmRoute && osrmRoute.geometry.length > 1) {
       const latlngs = osrmRoute.geometry.map(([lat, lng]) => L.latLng(lat, lng));
       latlngs.forEach(ll => bounds.extend(ll));
 
       L.polyline(latlngs, {
         color: '#5b4cff',
-        weight: 8,
+        weight: 5,
         opacity: 0.85,
       }).addTo(map);
-      addArrows(latlngs);
     } else {
       const coords = routeResult.orderedAddresses.map(a => L.latLng(a.lat, a.lng));
       L.polyline(coords, {
         color: '#5b4cff',
-        weight: 8,
+        weight: 4,
         opacity: 0.8,
         dashArray: '10, 10',
       }).addTo(map);
-      addArrows(coords);
     }
 
     const ordered = routeResult.orderedAddresses;
