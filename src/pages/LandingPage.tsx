@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/landing.css';
@@ -6,38 +5,17 @@ import '../styles/landing.css';
 export default function LandingPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [showAuthModal, setShowAuthModal] = useState(false);
 
   function handleStart() {
     if (user) {
       navigate('/subscription');
     } else {
-      setShowAuthModal(true);
+      navigate('/login');
     }
   }
 
   return (
     <div className="landing">
-      {/* Auth Modal */}
-      {showAuthModal && (
-        <div className="auth-modal-overlay" onClick={() => setShowAuthModal(false)}>
-          <div className="auth-modal" onClick={e => e.stopPropagation()}>
-            <button className="auth-modal-close" onClick={() => setShowAuthModal(false)}>✕</button>
-            <div className="auth-modal-icon">🗺️</div>
-            <h2>NaviOptima 시작하기</h2>
-            <p>로그인 또는 회원가입을 선택해주세요</p>
-            <div className="auth-modal-buttons">
-              <button className="btn-modal-login" onClick={() => navigate('/login')}>
-                기존 계정으로 로그인
-              </button>
-              <button className="btn-modal-signup" onClick={() => navigate('/signup')}>
-                새 계정 만들기 (회원가입)
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Hero */}
       <section className="hero">
         <div className="hero-bg-grid" />
