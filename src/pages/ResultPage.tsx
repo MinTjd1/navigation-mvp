@@ -5,11 +5,10 @@ import '../styles/vocab.css';
 export default function ResultPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { total, correct, wrongList, mode } = location.state as {
+  const { total, correct, wrongList } = location.state as {
     total: number;
     correct: number;
     wrongList: Word[];
-    mode: string;
   };
 
   const percentage = Math.round((correct / total) * 100);
