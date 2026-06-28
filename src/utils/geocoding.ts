@@ -18,7 +18,7 @@ export const ORIGIN_POINTS = {
 
 // Verified coordinates for well-known Daejeon landmarks
 const KNOWN_PLACES: Record<string, { lat: number; lng: number; road: string }> = {
-  '대전역': { lat: 36.33232, lng: 127.43464, road: '대전광역시 동구 동서대로 1689' },
+  '대전역': { lat: 36.33232, lng: 127.43464, road: '대전광역시 동구 중앙로 215' },
   '대전시청': { lat: 36.35065, lng: 127.38467, road: '대전광역시 서구 둔산로 100' },
   '카이스트': { lat: 36.37200, lng: 127.36070, road: '대전광역시 유성구 대학로 291' },
   'kaist': { lat: 36.37200, lng: 127.36070, road: '대전광역시 유성구 대학로 291' },

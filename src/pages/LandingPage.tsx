@@ -67,7 +67,7 @@ export default function LandingPage() {
             <div className="card-icon">📍</div>
             <div className="card-text">
               <strong>대전역</strong>
-              <span>동구 동서대로 1689</span>
+              <span>동구 중앙로 215</span>
             </div>
           </div>
           <div className="floating-card card-2">
