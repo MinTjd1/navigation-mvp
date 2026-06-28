@@ -84,13 +84,14 @@ export default function LandingPage() {
               <span>중구 대종로 480번길</span>
             </div>
           </div>
-          <div className="matrix-demo">
-            <div className="matrix-label">Distance Matrix</div>
-            <div className="matrix-grid-demo">
-              {['0', '5.2', '8.1', '5.2', '0', '3.7', '8.1', '3.7', '0'].map((v, i) => (
-                <div key={i} className={`m-cell ${i % 4 === 0 ? 'diag' : ''}`}>{v}</div>
-              ))}
-            </div>
+        </div>
+
+        <div className="matrix-demo">
+          <div className="matrix-label">Distance Matrix</div>
+          <div className="matrix-grid-demo">
+            {['0', '5.2', '8.1', '5.2', '0', '3.7', '8.1', '3.7', '0'].map((v, i) => (
+              <div key={i} className={`m-cell ${i % 4 === 0 ? 'diag' : ''}`}>{v}</div>
+            ))}
           </div>
         </div>
       </section>
