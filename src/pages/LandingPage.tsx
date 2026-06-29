@@ -17,6 +17,7 @@ export default function LandingPage() {
 
   return (
     <div className="landing">
+      <SettingsPanel />
       {/* Hero */}
       <section className="hero">
         <div className="hero-bg-grid" />
@@ -25,7 +26,6 @@ export default function LandingPage() {
             <span className="nav-logo-icon">🗺️</span>
             <span className="nav-logo-text">NaviOptima</span>
           </div>
-          <SettingsPanel />
         </nav>
 
         <div className="hero-content">

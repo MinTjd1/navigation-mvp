@@ -8,7 +8,16 @@ export default function SettingsPanel() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <button className="settings-trigger" onClick={() => navigate('/login')}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      </button>
+    );
+  }
 
   const plan = user.plan || '무료';
   const planClass = plan === 'Enterprise' ? 'enterprise' : plan === 'Pro' ? 'pro' : 'free';
@@ -31,7 +40,6 @@ export default function SettingsPanel() {
         </div>
 
         <div className="settings-body">
-          {/* Profile */}
           <div className="settings-section">
             <div className="settings-section-title">프로필</div>
             <div className="settings-profile">
@@ -45,7 +53,6 @@ export default function SettingsPanel() {
             </div>
           </div>
 
-          {/* Subscription */}
           <div className="settings-section">
             <div className="settings-section-title">구독 플랜</div>
             <div className="settings-plan-card">
@@ -64,7 +71,6 @@ export default function SettingsPanel() {
             </div>
           </div>
 
-          {/* Recent Origins */}
           <div className="settings-section">
             <div className="settings-section-title">자주 사용한 출발지</div>
             {user.recentOrigins && user.recentOrigins.length > 0 ? (
@@ -81,7 +87,6 @@ export default function SettingsPanel() {
             )}
           </div>
 
-          {/* Recent Destinations */}
           <div className="settings-section">
             <div className="settings-section-title">자주 사용한 목적지</div>
             {user.recentDestinations && user.recentDestinations.length > 0 ? (
@@ -98,7 +103,6 @@ export default function SettingsPanel() {
             )}
           </div>
 
-          {/* User Type */}
           <div className="settings-section">
             <div className="settings-section-title">사용 유형</div>
             <div className="settings-usertype">
