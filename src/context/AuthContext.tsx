@@ -33,6 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const users = getUsers();
     const found = users.find(u => u.email === email && u.password === password);
     if (found) {
+      if (!found.plan) found.plan = '무료';
       setUser(found);
       localStorage.setItem('currentUser', JSON.stringify(found));
       return true;
