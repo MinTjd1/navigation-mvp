@@ -47,6 +47,8 @@ export default function NavigationPage() {
   const [optimizeStep, setOptimizeStep] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
   const [showMatrix, setShowMatrix] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+  const [navStep, setNavStep] = useState(0);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const navigate = useNavigate();
@@ -182,6 +184,25 @@ export default function NavigationPage() {
       mapInstanceRef.current = null;
     };
   }, [routeResult, osrmRoute, origin]);
+
+  function zoomToLeg(legIndex: number) {
+    const map = mapInstanceRef.current;
+    if (!map || !routeResult) return;
+
+    const addresses = routeResult.orderedAddresses;
+    if (legIndex >= addresses.length - 1) return;
+
+    const from = addresses[legIndex];
+    const to = addresses[legIndex + 1];
+
+    const bounds = L.latLngBounds([
+      L.latLng(from.lat, from.lng),
+      L.latLng(to.lat, to.lng),
+    ]);
+
+    map.fitBounds(bounds, { padding: [80, 80], maxZoom: 16 });
+    setActiveStep(legIndex);
+  }
 
   if (isOptimizing) {
     return (
@@ -323,12 +344,58 @@ export default function NavigationPage() {
         )}
 
         <div className="nav-actions">
-          <button className="btn-restart" onClick={() => navigate('/user-type')}>
-            새로운 경로
+          <button className="btn-restart" onClick={() => {
+            if (isNavigating) {
+              setIsNavigating(false);
+              setNavStep(0);
+              const map = mapInstanceRef.current;
+              if (map && routeResult) {
+                const bounds = L.latLngBounds(routeResult.orderedAddresses.map(a => L.latLng(a.lat, a.lng)));
+                map.fitBounds(bounds, { padding: [50, 50] });
+              }
+            } else {
+              navigate('/user-type');
+            }
+          }}>
+            {isNavigating ? '전체 경로 보기' : '새로운 경로'}
           </button>
-          <button className="btn-start-nav" onClick={() => alert('네비게이션을 시작합니다!')}>
-            🧭 네비게이션 시작
-          </button>
+          {isNavigating ? (
+            <div className="nav-step-controls">
+              <button
+                className="btn-nav-prev"
+                onClick={() => {
+                  const prev = Math.max(0, navStep - 1);
+                  setNavStep(prev);
+                  zoomToLeg(prev);
+                }}
+                disabled={navStep === 0}
+              >
+                ← 이전
+              </button>
+              <span className="nav-step-label">
+                {navStep + 1} / {routeResult.orderedAddresses.length - 1} 구간
+              </span>
+              <button
+                className="btn-nav-next"
+                onClick={() => {
+                  const next = Math.min(routeResult.orderedAddresses.length - 2, navStep + 1);
+                  setNavStep(next);
+                  zoomToLeg(next);
+                }}
+                disabled={navStep >= routeResult.orderedAddresses.length - 2}
+              >
+                다음 →
+              </button>
+            </div>
+          ) : (
+            <button className="btn-start-nav" onClick={() => {
+              setIsNavigating(true);
+              setNavStep(0);
+              zoomToLeg(0);
+            }}>
+              🧭 네비게이션 시작
+            </button>
+          )}
         </div>
       </div>
 
