@@ -265,6 +265,77 @@
   color: #888;
 }
 
+/* Turn-by-turn */
+.turn-by-turn {
+  margin: 0 16px;
+  background: #f8f8fc;
+  border-radius: 12px;
+  border: 1px solid #e8e8f0;
+  overflow: hidden;
+}
+
+.tbt-header {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a2e;
+  padding: 14px 16px 8px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tbt-sub {
+  font-size: 12px;
+  font-weight: 500;
+  color: #888;
+}
+
+.tbt-steps {
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 4px 8px 8px;
+}
+
+.tbt-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.tbt-step:hover {
+  background: white;
+}
+
+.tbt-icon {
+  font-size: 20px;
+  width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.tbt-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tbt-instruction {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+}
+
+.tbt-detail {
+  font-size: 11px;
+  color: #999;
+}
+
 .btn-matrix {
   margin: 0 16px;
   padding: 10px;

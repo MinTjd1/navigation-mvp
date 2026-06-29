@@ -4,7 +4,7 @@ import L from 'leaflet';
 import type { Address, RouteResult } from '../types';
 import { buildDistanceMatrix, optimizeRoute } from '../algorithms/floydWarshall';
 import { getOSRMDistanceMatrix, getOSRMRoute } from '../utils/routing';
-import type { OSRMRouteResult } from '../utils/routing';
+import type { OSRMRouteResult, RouteStep } from '../utils/routing';
 import '../styles/navigation.css';
 import 'leaflet/dist/leaflet.css';
 
@@ -303,6 +303,39 @@ export default function NavigationPage() {
             );
           })}
         </div>
+
+        {isNavigating && osrmRoute?.legSteps?.[navStep] && (
+          <div className="turn-by-turn">
+            <h3 className="tbt-header">
+              🧭 {navStep + 1}구간 상세 안내
+              <span className="tbt-sub">
+                {routeResult.orderedAddresses[navStep]?.address} → {routeResult.orderedAddresses[navStep + 1]?.address}
+              </span>
+            </h3>
+            <div className="tbt-steps">
+              {osrmRoute.legSteps[navStep].map((step: RouteStep, i: number) => (
+                <div
+                  key={i}
+                  className="tbt-step"
+                  onClick={() => {
+                    mapInstanceRef.current?.setView(step.location, 17);
+                  }}
+                >
+                  <span className="tbt-icon">{step.icon}</span>
+                  <div className="tbt-info">
+                    <span className="tbt-instruction">{step.instruction}</span>
+                    <span className="tbt-detail">
+                      {step.distance >= 1000
+                        ? `${(step.distance / 1000).toFixed(1)}km`
+                        : `${Math.round(step.distance)}m`}
+                      {step.duration > 0 && ` · 약 ${Math.ceil(step.duration / 60)}분`}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <button className="btn-matrix" onClick={() => setShowMatrix(!showMatrix)}>
           {showMatrix ? '행렬 숨기기' : '📊 거리 행렬 보기'}
