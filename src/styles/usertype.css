@@ -1,3 +1,39 @@
+.plan-badge-fixed {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(8px);
+}
+
+.plan-badge-fixed:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.4);
+}
+
+.plan-badge-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+}
+
+.plan-badge-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  padding: 2px 10px;
+  background: rgba(91,76,255,0.5);
+  border-radius: 6px;
+}
+
 .usertype-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);

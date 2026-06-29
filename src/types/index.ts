@@ -5,6 +5,7 @@ export interface User {
   name: string;
   userType?: 'driver' | 'general';
   isSubscribed?: boolean;
+  plan?: string;
 }
 
 export interface Address {

@@ -7,12 +7,13 @@ export default function SubscriptionPage() {
   const { updateUser } = useAuth();
 
   function handleSubscribe(plan: string) {
-    updateUser({ isSubscribed: true });
+    updateUser({ isSubscribed: true, plan });
     alert(`${plan} 구독이 완료되었습니다!`);
     navigate('/user-type');
   }
 
   function handleSkip() {
+    updateUser({ isSubscribed: false, plan: '무료' });
     navigate('/user-type');
   }
 
