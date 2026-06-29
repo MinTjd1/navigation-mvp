@@ -290,6 +290,23 @@
   background: #ffe0e0;
 }
 
+.settings-login-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #5b4cff, #7c6cff);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settings-login-btn:hover {
+  box-shadow: 0 4px 15px rgba(91, 76, 255, 0.4);
+}
+
 @media (max-width: 480px) {
   .settings-panel {
     width: 100%;

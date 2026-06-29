@@ -8,18 +8,10 @@ export default function SettingsPanel() {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  if (!user) {
-    return (
-      <button className="settings-trigger" onClick={() => navigate('/login')}>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-        </svg>
-      </button>
-    );
-  }
-
-  const plan = user.plan || '무료';
+  const displayName = user ? (user.name || '사용자') : '무명';
+  const displayEmail = user ? user.email : '로그인이 필요합니다';
+  const displayInitial = user ? (user.name?.charAt(0) || user.email.charAt(0).toUpperCase()) : '?';
+  const plan = user?.plan || '무료';
   const planClass = plan === 'Enterprise' ? 'enterprise' : plan === 'Pro' ? 'pro' : 'free';
 
   return (
@@ -44,11 +36,11 @@ export default function SettingsPanel() {
             <div className="settings-section-title">프로필</div>
             <div className="settings-profile">
               <div className="settings-avatar">
-                {user.name?.charAt(0) || user.email.charAt(0).toUpperCase()}
+                {displayInitial}
               </div>
               <div className="settings-profile-info">
-                <div className="settings-name">{user.name || '사용자'}</div>
-                <div className="settings-email">{user.email}</div>
+                <div className="settings-name">{displayName}</div>
+                <div className="settings-email">{displayEmail}</div>
               </div>
             </div>
           </div>
@@ -73,7 +65,7 @@ export default function SettingsPanel() {
 
           <div className="settings-section">
             <div className="settings-section-title">자주 사용한 출발지</div>
-            {user.recentOrigins && user.recentOrigins.length > 0 ? (
+            {user?.recentOrigins && user.recentOrigins.length > 0 ? (
               <ul className="settings-place-list">
                 {user.recentOrigins.slice(0, 5).map((place, i) => (
                   <li key={i}>
@@ -89,7 +81,7 @@ export default function SettingsPanel() {
 
           <div className="settings-section">
             <div className="settings-section-title">자주 사용한 목적지</div>
-            {user.recentDestinations && user.recentDestinations.length > 0 ? (
+            {user?.recentDestinations && user.recentDestinations.length > 0 ? (
               <ul className="settings-place-list">
                 {user.recentDestinations.slice(0, 5).map((place, i) => (
                   <li key={i}>
@@ -106,18 +98,27 @@ export default function SettingsPanel() {
           <div className="settings-section">
             <div className="settings-section-title">사용 유형</div>
             <div className="settings-usertype">
-              {user.userType === 'driver' ? '🚚 배달 기사' : user.userType === 'general' ? '🧭 일반 사용' : '미선택'}
+              {user?.userType === 'driver' ? '🚚 배달 기사' : user?.userType === 'general' ? '🧭 일반 사용' : '미선택'}
             </div>
           </div>
         </div>
 
         <div className="settings-footer">
-          <button
-            className="settings-logout"
-            onClick={() => { logout(); setOpen(false); navigate('/'); }}
-          >
-            로그아웃
-          </button>
+          {user ? (
+            <button
+              className="settings-logout"
+              onClick={() => { logout(); setOpen(false); navigate('/'); }}
+            >
+              로그아웃
+            </button>
+          ) : (
+            <button
+              className="settings-login-btn"
+              onClick={() => { setOpen(false); navigate('/login'); }}
+            >
+              로그인
+            </button>
+          )}
         </div>
       </div>
     </>
