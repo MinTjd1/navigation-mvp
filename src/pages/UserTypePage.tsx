@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import SettingsPanel from '../components/SettingsPanel';
 import '../styles/usertype.css';
 
 export default function UserTypePage() {
   const navigate = useNavigate();
-  const { user, updateUser } = useAuth();
-  const currentPlan = user?.plan || '무료';
+  const { updateUser } = useAuth();
 
   function selectType(type: 'driver' | 'general') {
     updateUser({ userType: type });
@@ -18,10 +18,7 @@ export default function UserTypePage() {
 
   return (
     <div className="usertype-container">
-      <div className="plan-badge-fixed" onClick={() => navigate('/subscription')}>
-        <span className="plan-badge-label">현재 플랜</span>
-        <span className="plan-badge-name">{currentPlan}</span>
-      </div>
+      <SettingsPanel />
       <h1>사용 유형을 선택해주세요</h1>
       <p className="usertype-subtitle">어떤 용도로 NaviOptima를 사용하시나요?</p>
 

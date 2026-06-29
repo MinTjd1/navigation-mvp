@@ -6,6 +6,8 @@ export interface User {
   userType?: 'driver' | 'general';
   isSubscribed?: boolean;
   plan?: string;
+  recentOrigins?: string[];
+  recentDestinations?: string[];
 }
 
 export interface Address {

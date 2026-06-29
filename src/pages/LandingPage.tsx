@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import SettingsPanel from '../components/SettingsPanel';
 import '../styles/landing.css';
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { user } = useAuth();
 
   function handleStart() {
     navigate('/login');
@@ -20,12 +19,7 @@ export default function LandingPage() {
             <span className="nav-logo-icon">🗺️</span>
             <span className="nav-logo-text">NaviOptima</span>
           </div>
-          {user && (
-            <div className="nav-user-badge">
-              <span className="nav-user-icon">👤</span>
-              <span className="nav-user-email">{user.email}</span>
-            </div>
-          )}
+          <SettingsPanel />
         </nav>
 
         <div className="hero-content">

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Address } from '../types';
 import { createAddressFromString } from '../utils/geocoding';
+import { useAuth } from '../context/AuthContext';
 import '../styles/addressreview.css';
 
 export default function AddressReviewPage() {
@@ -10,6 +11,7 @@ export default function AddressReviewPage() {
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [geocodeProgress, setGeocodeProgress] = useState({ done: 0, total: 0 });
   const navigate = useNavigate();
+  const { user, updateUser } = useAuth();
 
   useEffect(() => {
     const saved = sessionStorage.getItem('scannedAddresses');
@@ -65,6 +67,22 @@ export default function AddressReviewPage() {
       return;
     }
     sessionStorage.setItem('reviewedAddresses', JSON.stringify(addresses));
+
+    if (user) {
+      const originAddr = sessionStorage.getItem('originAddress');
+      const destNames = addresses.map(a => a.address);
+
+      const prevOrigins = user.recentOrigins || [];
+      const prevDests = user.recentDestinations || [];
+
+      const newOrigins = originAddr
+        ? [originAddr, ...prevOrigins.filter(o => o !== originAddr)].slice(0, 10)
+        : prevOrigins;
+      const newDests = [...new Set([...destNames, ...prevDests])].slice(0, 10);
+
+      updateUser({ recentOrigins: newOrigins, recentDestinations: newDests });
+    }
+
     navigate('/navigation');
   }
 

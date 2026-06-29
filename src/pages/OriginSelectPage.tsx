@@ -14,6 +14,7 @@ export default function OriginSelectPage() {
     }
     const origin = ORIGIN_POINTS[selected];
     sessionStorage.setItem('selectedOrigin', JSON.stringify(origin));
+    sessionStorage.setItem('originAddress', origin.address);
     navigate('/ocr-scan');
   }
 

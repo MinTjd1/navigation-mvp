@@ -155,6 +155,7 @@ export default function GeneralInputPage() {
       lng: loc.lng,
     };
     sessionStorage.setItem('selectedOrigin', JSON.stringify(originData));
+    sessionStorage.setItem('originAddress', originData.address);
 
     sessionStorage.setItem('scannedAddresses', JSON.stringify(validAddresses));
     navigate('/address-review');
