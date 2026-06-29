@@ -6,6 +6,7 @@ import '../styles/auth.css';
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [autoLoginChecked, setAutoLoginChecked] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export default function LoginPage() {
       setError('이메일과 비밀번호를 입력해주세요.');
       return;
     }
-    if (login(email, password)) {
+    if (login(email, password, autoLoginChecked)) {
       navigate('/subscription');
     } else {
       setError('이메일 또는 비밀번호가 올바르지 않습니다.');
@@ -53,6 +54,14 @@ export default function LoginPage() {
               placeholder="비밀번호 입력"
             />
           </div>
+          <label className="auto-login-label">
+            <input
+              type="checkbox"
+              checked={autoLoginChecked}
+              onChange={e => setAutoLoginChecked(e.target.checked)}
+            />
+            <span>자동 로그인</span>
+          </label>
           {error && <div className="error-message">{error}</div>}
           <button type="submit" className="btn-primary">로그인</button>
         </form>

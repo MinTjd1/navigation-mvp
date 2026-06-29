@@ -4,7 +4,8 @@ import type { User } from '../types';
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => boolean;
+  autoLogin: boolean;
+  login: (email: string, password: string, auto: boolean) => boolean;
   signup: (email: string, password: string, name: string) => boolean;
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
@@ -14,10 +15,17 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [autoLogin, setAutoLogin] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('currentUser');
-    if (saved) setUser(JSON.parse(saved));
+    const auto = localStorage.getItem('autoLogin') === 'true';
+    setAutoLogin(auto);
+    if (auto) {
+      const saved = localStorage.getItem('currentUser');
+      if (saved) setUser(JSON.parse(saved));
+    } else {
+      localStorage.removeItem('currentUser');
+    }
   }, []);
 
   function getUsers(): User[] {
@@ -29,13 +37,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('users', JSON.stringify(users));
   }
 
-  function login(email: string, password: string): boolean {
+  function login(email: string, password: string, auto: boolean): boolean {
     const users = getUsers();
     const found = users.find(u => u.email === email && u.password === password);
     if (found) {
       if (!found.plan) found.plan = '무료';
       setUser(found);
+      setAutoLogin(auto);
       localStorage.setItem('currentUser', JSON.stringify(found));
+      localStorage.setItem('autoLogin', auto ? 'true' : 'false');
       return true;
     }
     return false;
@@ -59,7 +69,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   function logout() {
     setUser(null);
+    setAutoLogin(false);
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('autoLogin');
   }
 
   function updateUser(updates: Partial<User>) {
@@ -72,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, autoLogin, login, signup, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

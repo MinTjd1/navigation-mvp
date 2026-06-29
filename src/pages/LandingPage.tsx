@@ -1,12 +1,18 @@
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import SettingsPanel from '../components/SettingsPanel';
 import '../styles/landing.css';
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { user, autoLogin } = useAuth();
 
   function handleStart() {
-    navigate('/login');
+    if (user && autoLogin) {
+      navigate('/user-type');
+    } else {
+      navigate('/login');
+    }
   }
 
   return (
