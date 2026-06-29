@@ -105,3 +105,15 @@
   text-decoration: none;
   font-weight: 600;
 }
+
+.auth-footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.auth-divider {
+  color: #ccc;
+  font-size: 12px;
+}

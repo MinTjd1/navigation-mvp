@@ -56,8 +56,12 @@ export default function LoginPage() {
           {error && <div className="error-message">{error}</div>}
           <button type="submit" className="btn-primary">로그인</button>
         </form>
-        <div className="auth-footer">
-          <p>계정이 없으신가요? <Link to="/signup">회원가입</Link></p>
+        <div className="auth-footer auth-footer-links">
+          <Link to="#">아이디 찾기</Link>
+          <span className="auth-divider">|</span>
+          <Link to="#">비밀번호 찾기</Link>
+          <span className="auth-divider">|</span>
+          <Link to="/signup">회원가입</Link>
         </div>
       </div>
     </div>
