@@ -10,6 +10,7 @@ import OCRScanPage from './pages/OCRScanPage';
 import ManualInputPage from './pages/ManualInputPage';
 import GeneralInputPage from './pages/GeneralInputPage';
 import AddressReviewPage from './pages/AddressReviewPage';
+import ConsentPage from './pages/ConsentPage';
 import NavigationPage from './pages/NavigationPage';
 import PaymentPage from './pages/PaymentPage';
 import PaymentCompletePage from './pages/PaymentCompletePage';
@@ -25,6 +26,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/consent" element={<ConsentPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
       <Route path="/payment" element={<ProtectedRoute><PaymentPage /></ProtectedRoute>} />

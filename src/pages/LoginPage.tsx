@@ -61,7 +61,7 @@ export default function LoginPage() {
           <span className="auth-divider">|</span>
           <Link to="#">비밀번호 찾기</Link>
           <span className="auth-divider">|</span>
-          <Link to="/signup">회원가입</Link>
+          <Link to="/consent">회원가입</Link>
         </div>
       </div>
     </div>
