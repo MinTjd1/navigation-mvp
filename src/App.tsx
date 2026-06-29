@@ -11,6 +11,8 @@ import ManualInputPage from './pages/ManualInputPage';
 import GeneralInputPage from './pages/GeneralInputPage';
 import AddressReviewPage from './pages/AddressReviewPage';
 import NavigationPage from './pages/NavigationPage';
+import PaymentPage from './pages/PaymentPage';
+import PaymentCompletePage from './pages/PaymentCompletePage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
@@ -25,6 +27,8 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/subscription" element={<ProtectedRoute><SubscriptionPage /></ProtectedRoute>} />
+      <Route path="/payment" element={<ProtectedRoute><PaymentPage /></ProtectedRoute>} />
+      <Route path="/payment-complete" element={<ProtectedRoute><PaymentCompletePage /></ProtectedRoute>} />
       <Route path="/user-type" element={<ProtectedRoute><UserTypePage /></ProtectedRoute>} />
       <Route path="/origin-select" element={<ProtectedRoute><OriginSelectPage /></ProtectedRoute>} />
       <Route path="/ocr-scan" element={<ProtectedRoute><OCRScanPage /></ProtectedRoute>} />

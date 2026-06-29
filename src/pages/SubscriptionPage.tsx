@@ -7,9 +7,7 @@ export default function SubscriptionPage() {
   const { updateUser } = useAuth();
 
   function handleSubscribe(plan: string) {
-    updateUser({ isSubscribed: true, plan });
-    alert(`${plan} 구독이 완료되었습니다!`);
-    navigate('/user-type');
+    navigate('/payment', { state: { plan } });
   }
 
   function handleSkip() {
